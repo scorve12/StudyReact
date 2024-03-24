@@ -6,12 +6,4 @@ function HelloProp(props :any) {
     );
 }
 
-function HelloProps(props:any){
-    return(
-        <div style={{color: props.color}}>
-        이것은 비구조화할당 {props.name}
-        </div>
-    )
-}
-
 export default HelloProp;
