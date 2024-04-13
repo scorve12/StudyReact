@@ -13,11 +13,13 @@ interface UserProps {
 }
 
 interface User {
+    id: number;
     username: string;
     email: string;
 }
 
 const CreateUser: React.FC<UserProps> = ({ username = '', email = '' }) => {
+    const [currentId, setCurrentId] = useState(0);
     const [localUsername, setLocalUsername] = useState(username);
     const [localEmail, setLocalEmail] = useState(email);
     const [users, setUsers] = useState<User[]>([]);
@@ -33,12 +35,20 @@ const CreateUser: React.FC<UserProps> = ({ username = '', email = '' }) => {
         setter(e.target.value); // setLocalUsername() 객체가 들어간다.
     };
 
-    //User배열 추가 함수
+    //User배열 add 함수
     const handleAddUser = () => {
-        setUsers([...users, {username: localUsername, email: localEmail}]);
-        console.log(`Creating user: ${username} with email: ${email}`);
+        const newUser = {id: currentId, username: localUsername, email: localEmail};
+        setUsers([...users, newUser]);
+        console.log(`ADD usetId: ${currentId}`);
+        setCurrentId(currentId + 1)
         setLocalUsername('');
         setLocalEmail(''); //입력필드 초기화
+    }
+
+    //User배열 del 함수
+    const handleDelUser = (id: number) => {
+        setUsers(users.filter(user => user.id !== id));
+        console.log(`Delete id: ${id} `);
     }
     
     return (
@@ -57,8 +67,12 @@ const CreateUser: React.FC<UserProps> = ({ username = '', email = '' }) => {
             />
             <button onClick={handleAddUser}>등록</button>
             <ul>
-                {users.map((user, index) => (
-                <li key={index}>user:{user.username} / email:{user.email}</li>  // 사용자 목록을 화면에 렌더링
+                {users.map((user) => (
+                    //onClick={()=>} user.id를 인자로 받기 때문에 화살표함수를 사용해서 함수를 반환해야 한다.
+                    <li key={user.id}>
+                        user:{user.username} / email:{user.email}
+                        <button onClick={() =>handleDelUser(user.id)}>삭제</button>
+                    </li>  // 사용자 목록을 화면에 
                 ))}
             </ul>
         </div>
